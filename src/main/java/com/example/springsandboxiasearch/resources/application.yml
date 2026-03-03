@@ -1,0 +1,20 @@
+server:
+    port: 8080
+
+aws:
+  region: eu-west-3 # Change this to your desired AWS region
+  bedrock:
+    titan-embeddings-model: amazon.titan-embed-text-v2:0 # Change this to the desired Titan embedding model version
+    claude-model: anthropic.claude-3-5-sonnet-20241022-v2:0 # Change this to the desired Claude model version
+
+
+#TODO: Add more configuration properties as needed, such as AWS credentials, S3 bucket names, etc.
+rag:
+
+
+logging:
+  level:
+    com.example.springsandboxiasearch: DEBUG
+    software.amazon.awssdk: INFO
+
+
