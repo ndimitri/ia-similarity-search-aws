@@ -1,8 +1,20 @@
 spring:
   application:
     name: spring-sandbox-ia-search
+  profiles:
+    active: mock
 
 aws:
   s3-bucket: my-vector-bucket
   bedrock-model-id: amazon.titan-embed-text-v2:0
+  endpoint: http://localhost:4566
+  region: us-east-3
+  access-key-id: test
+  secret-access-key: test
+
+logging:
+  level:
+    com.example.springsandboxiasearch: DEBUG
+    software.amazon.awssdk: INFO
+
 
