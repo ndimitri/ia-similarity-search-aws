@@ -3,6 +3,7 @@ package com.example.springsandboxiasearch.services;
 import com.example.springsandboxiasearch.config.AwsProperties;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -11,8 +12,9 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 @Service
+//@Profile("!mock")
 @RequiredArgsConstructor
-public class S3VectorStoreService {
+public class VectorStoreService {
   private final S3Client s3;
   private final ObjectMapper mapper = new ObjectMapper();
   private final AwsProperties awsProperties;

@@ -3,7 +3,9 @@ package com.example.springsandboxiasearch.services;
 import com.example.springsandboxiasearch.config.AwsProperties;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
@@ -15,8 +17,10 @@ import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
 @Service
+//@Profile("!mock")
 @RequiredArgsConstructor
-public class BedrockEmbeddingsService {
+@Builder
+public class EmbeddingsService {
 
   private final BedrockRuntimeClient bedrockClient;
   private final AwsProperties awsProperties;
@@ -25,10 +29,6 @@ public class BedrockEmbeddingsService {
   public List<Float> embed(String text) throws Exception{
     ObjectNode payload = objectMapper.createObjectNode();
     payload.put("inputText", text);
-
-
-    //Model ID for Amazon Titan Embed Text v2
-//    String modelId = "amazon.titan-embed-text-v2:0";
 
     InvokeModelRequest request = InvokeModelRequest.builder()
         .modelId(awsProperties.getBedrockModelId())
