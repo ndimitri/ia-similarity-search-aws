@@ -1,5 +1,6 @@
 package com.example.springsandboxiasearch.services;
 
+import com.example.springsandboxiasearch.config.AwsProperties;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,29 +12,35 @@ import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 
 @Service
 @RequiredArgsConstructor
 public class BedrockEmbeddingsService {
 
   private final BedrockRuntimeClient bedrockClient;
+  private final AwsProperties awsProperties;
+  private final ObjectMapper objectMapper;
 
-  public List<Float> embed(String text){
+  public List<Float> embed(String text) throws Exception{
+    ObjectNode payload = objectMapper.createObjectNode();
+    payload.put("inputText", text);
+
 
     //Model ID for Amazon Titan Embed Text v2
-    String modelId = "amazon.titan-embed-text-v2:0";
+//    String modelId = "amazon.titan-embed-text-v2:0";
 
     InvokeModelRequest request = InvokeModelRequest.builder()
-        .modelId(modelId)
+        .modelId(awsProperties.getBedrockModelId())
         .contentType("application/json")
         .accept("application/json")
-        .body(SdkBytes.fromUtf8String("{\"inputText\": \"" + text.replace("\"", "'") + "\"}"))
+        .body(SdkBytes.fromUtf8String(objectMapper.writeValueAsString(payload)))
         .build();
 
     InvokeModelResponse response = bedrockClient.invokeModel(request);
 
     String json = response.body().asUtf8String();
-    JsonNode node = new ObjectMapper().readTree(json);
+    JsonNode node = objectMapper.readTree(json);
 
     ArrayNode array = (ArrayNode) node.get("embedding");
 

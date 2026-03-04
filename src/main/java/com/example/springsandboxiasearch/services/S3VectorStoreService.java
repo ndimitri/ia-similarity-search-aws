@@ -1,6 +1,8 @@
 package com.example.springsandboxiasearch.services;
 
+import com.example.springsandboxiasearch.config.AwsProperties;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -9,14 +11,13 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 @Service
+@RequiredArgsConstructor
 public class S3VectorStoreService {
   private final S3Client s3;
   private final ObjectMapper mapper = new ObjectMapper();
-  private final String bucket = "my-vector-bucket";
+  private final AwsProperties awsProperties;
+//  private final String bucket = "my-vector-bucket";
 
-  public S3VectorStoreService(S3Client s3) {
-    this.s3 = s3;
-  }
 
   public void storeVector(String id, String text, List<Float> embedding) throws Exception {
     ObjectNode root = mapper.createObjectNode();
@@ -28,7 +29,7 @@ public class S3VectorStoreService {
 
     s3.putObject(
         PutObjectRequest.builder()
-            .bucket(bucket)
+            .bucket(awsProperties.getS3Bucket())
             .key("vectors/" + id + ".json")
             .build(),
         RequestBody.fromString(json)
